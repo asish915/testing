@@ -1,14 +1,14 @@
 #!/bin/bash
-# Update and install nginx
+# Update the system and install required packages
 yum update -y
 amazon-linux-extras install nginx1 -y
 yum install -y unzip aws-cli
 
-# Enable and start nginx
+# Enable and start NGINX
 systemctl enable nginx
 systemctl start nginx
 
-# Replace the default nginx configuration
+# Replace the default NGINX configuration with our custom config
 cat <<EOF > /etc/nginx/nginx.conf
 user nginx;
 worker_processes auto;
@@ -47,21 +47,25 @@ http {
 }
 EOF
 
-# Clean existing content
+# Clean the existing content at the NGINX root
 rm -rf /usr/share/nginx/html/*
 
-# Download and extract frontend app from S3
-aws s3 cp s3://your-bucket-name/vite-app.zip /tmp/vite-app.zip
-unzip /tmp/vite-app.zip -d /usr/share/nginx/html/
+# Download the Vite app artifact (vite-app.zip) from S3
+aws s3 cp s3://vite-app-s3-bucket256/vite-app.zip /tmp/vite-app.zip
 
-# If it contains a dist folder inside, move contents from dist
+# Unzip the artifact into the NGINX root folder
+unzip -o /tmp/vite-app.zip -d /usr/share/nginx/html/
+
+# If the ZIP contains a nested "dist" directory, move its content to the root
 if [ -d "/usr/share/nginx/html/dist" ]; then
-    mv /usr/share/nginx/html/dist/* /usr/share/nginx/html/
-    rm -rf /usr/share/nginx/html/dist
+  mv /usr/share/nginx/html/dist/* /usr/share/nginx/html/
+  rm -rf /usr/share/nginx/html/dist
 fi
 
-# Set permissions
+# Set ownership and permissions so that the nginx process can read the files
+chown -R nginx:nginx /usr/share/nginx/html
 chmod -R 755 /usr/share/nginx/html
 
-# Restart nginx to apply new config
+# Restart NGINX to apply the new configuration
 systemctl restart nginx
+
