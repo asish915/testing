@@ -26,7 +26,7 @@ Thumbs.db
 # === Terraform ===
 *.tfstate
 *.tfstate.backup
-# .terraform/
+.terraform/
 .terraform.lock.hcl
 crash.log
 override.tf
