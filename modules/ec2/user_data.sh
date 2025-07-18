@@ -9,8 +9,7 @@ systemctl enable nginx
 systemctl start nginx
 
 # Replace the default nginx configuration
-cat <<EOF > root /usr/share/nginx/html;
-
+cat <<EOF > /etc/nginx/nginx.conf
 user nginx;
 worker_processes auto;
 
@@ -52,8 +51,14 @@ EOF
 rm -rf /usr/share/nginx/html/*
 
 # Download and extract frontend app from S3
-aws s3 cp s3://${var.frontend_s3_bucket}/vite-app.zip /tmp/vite-app.zip
+aws s3 cp s3://your-bucket-name/vite-app.zip /tmp/vite-app.zip
 unzip /tmp/vite-app.zip -d /usr/share/nginx/html/
+
+# If it contains a dist folder inside, move contents from dist
+if [ -d "/usr/share/nginx/html/dist" ]; then
+    mv /usr/share/nginx/html/dist/* /usr/share/nginx/html/
+    rm -rf /usr/share/nginx/html/dist
+fi
 
 # Set permissions
 chmod -R 755 /usr/share/nginx/html
