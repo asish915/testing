@@ -3,3 +3,9 @@ variable "project_name" {
   type        = string
   default     = "vite-react-app"
 }
+
+variable "github_connection_name" {
+  description = "Name of GitHub CodeStar connection"
+  type        = string
+  default     = "asish-git-connection"
+}

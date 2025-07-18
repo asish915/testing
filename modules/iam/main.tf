@@ -88,3 +88,10 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "${var.project_name}-ec2-profile"
   role = aws_iam_role.ec2_role.name
 }
+
+# CodeStar Connection IAM Role
+
+resource "aws_codestarconnections_connection" "github_connection" {
+  name          = var.github_connection_name
+  provider_type = "GitHub"
+}
