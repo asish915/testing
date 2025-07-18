@@ -37,5 +37,5 @@ variable "artifact_bucket" {
 variable "pipeline_role_arn" {
   description = "IAM Role ARN for CodePipeline"
   type        = string
-  default     = "arn:aws:iam::068760013706:role/vite-react-app-pipeline-role" # 🔁 Replace
+  default     = "arn:aws:iam::068760013706:role/vite-react-app-codepipeline-role" # 🔁 Replace
 }
