@@ -14,7 +14,7 @@ output "s3_bucket_name" {
 }
 
 output "ec2_public_ip" {
-  value = aws_instance.vite_ec2.public_ip
+  value = module.ec2.public_ip
 }
 
 output "codepipeline_role_arn" {

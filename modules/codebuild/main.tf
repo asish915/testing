@@ -17,7 +17,6 @@ resource "aws_codebuild_project" "vite_app" {
     image                       = "aws/codebuild/standard:7.0"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = false
-    environment_variables = []
   }
 
   source {
