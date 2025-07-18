@@ -9,7 +9,8 @@ systemctl enable nginx
 systemctl start nginx
 
 # Replace the default nginx configuration
-cat <<EOF > /etc/nginx/nginx.conf
+cat <<EOF > root /usr/share/nginx/html;
+
 user nginx;
 worker_processes auto;
 
