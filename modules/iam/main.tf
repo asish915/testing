@@ -1,19 +1,18 @@
-# CodeBuild Role & policy
-
+#######################
+# CODEBUILD ROLE
+#######################
 resource "aws_iam_role" "codebuild_role" {
   name = "${var.project_name}-codebuild-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [
-        {
-        Effect = "Allow",
-        Principal = {
-          Service = "codebuild.amazonaws.com" 
-          },
-        Action = "sts:AssumeRole"
-      }
-    ]
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "codebuild.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
   })
 
   tags = {
@@ -23,26 +22,25 @@ resource "aws_iam_role" "codebuild_role" {
 
 resource "aws_iam_role_policy_attachment" "codebuild_policy_attach" {
   role       = aws_iam_role.codebuild_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess" # Can be replaced with granular policy
 }
 
 
-# CodePipeline Role & policy
-
+#######################
+# CODEPIPELINE ROLE
+#######################
 resource "aws_iam_role" "codepipeline_role" {
   name = "${var.project_name}-codepipeline-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "codepipeline.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      }
-    ]
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "codepipeline.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
   })
 
   tags = {
@@ -56,22 +54,21 @@ resource "aws_iam_role_policy_attachment" "codepipeline_policy_attach" {
 }
 
 
-# EC2 Instance Profile
-
+#######################
+# EC2 ROLE & PROFILE
+#######################
 resource "aws_iam_role" "ec2_role" {
   name = "${var.project_name}-ec2-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      }
-    ]
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
   })
 
   tags = {
@@ -89,8 +86,10 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
   role = aws_iam_role.ec2_role.name
 }
 
-# CodeStar Connection IAM Role
 
+#######################
+# CODESTAR CONNECTION (GitHub)
+#######################
 resource "aws_codestarconnections_connection" "github_connection" {
   name          = var.github_connection_name
   provider_type = "GitHub"
