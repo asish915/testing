@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo "Installing dependencies..."
+      - cd vite-app
+      - npm install
+
+  build:
+    commands:
+      - echo "Building Vite app..."
+      - npm run build
+      - cd dist
+      - zip -r ../vite-app.zip .
+      - cd ..
+
+artifacts:
+  files:
+    - vite-app/vite-app.zip
+

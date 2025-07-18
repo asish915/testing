@@ -1,0 +1,52 @@
+# === Node / Vite ===
+node_modules/
+# dist/
+.vite/
+.env
+.env.local
+.env.*.local
+
+# === Logs ===
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# === OS / Editor ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.swn
+*.bak
+.idea/
+.vscode/
+
+# === Terraform ===
+*.tfstate
+*.tfstate.backup
+# .terraform/
+.terraform.lock.hcl
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+
+# === AWS ===
+*.pem
+*.key
+
+# === GitHub Actions ===
+# Ignore runner temporary files
+.github/workflows/*.bak
+.github/workflows/*.old
+
+# === S3 Deployment Artifacts ===
+build/
+
+# === EC2 Deployment ===
+ec2-user-data.log
