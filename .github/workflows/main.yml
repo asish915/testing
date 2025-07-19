@@ -42,6 +42,37 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
+  tfsec:
+    name: Terraform Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
+
+  trivy:
+    name: Trivy Scan (Docker Image)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        run: docker build -t vite-app:latest .
+
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: vite-app:latest
+          format: table
+          exit-code: 0
+          ignore-unfixed: true
+
 
   deploy:
     runs-on: ubuntu-latest
