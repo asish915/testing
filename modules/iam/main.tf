@@ -22,7 +22,23 @@ resource "aws_iam_role" "codebuild_role" {
 
 resource "aws_iam_role_policy_attachment" "codebuild_policy_attach" {
   role       = aws_iam_role.codebuild_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess" # Can be replaced with granular policy
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+resource "aws_iam_role_policy" "codebuild_kms_decrypt" {
+  name = "kms-decrypt"
+  role = aws_iam_role.codebuild_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "kms:Decrypt"
+      ],
+      Resource = "arn:aws:kms:ap-south-1:068760013706:key/fdf304cb-296e-40c6-8ba1-81ceef58e0b6" # You can restrict this to specific KMS key ARN
+    }]
+  })
 }
 
 
@@ -53,6 +69,22 @@ resource "aws_iam_role_policy_attachment" "codepipeline_policy_attach" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
+resource "aws_iam_role_policy" "codepipeline_kms_decrypt" {
+  name = "kms-decrypt"
+  role = aws_iam_role.codepipeline_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "kms:Decrypt"
+      ],
+      Resource = "arn:aws:kms:ap-south-1:068760013706:key/fdf304cb-296e-40c6-8ba1-81ceef58e0b6"
+    }]
+  })
+}
+
 
 #######################
 # EC2 ROLE & PROFILE
@@ -81,18 +113,31 @@ resource "aws_iam_role_policy_attachment" "ec2_policy_attach" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-# Allow EC2 to publish logs to CloudWatch (optional but recommended)
 resource "aws_iam_role_policy_attachment" "ec2_cloudwatch_logs" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
-# Allow EC2 to access EC2 metadata and Parameter Store (optional)
 resource "aws_iam_role_policy_attachment" "ec2_ssm_access" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
 }
 
+resource "aws_iam_role_policy" "ec2_kms_decrypt" {
+  name = "kms-decrypt"
+  role = aws_iam_role.ec2_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "kms:Decrypt"
+      ],
+      Resource = "arn:aws:kms:ap-south-1:068760013706:key/fdf304cb-296e-40c6-8ba1-81ceef58e0b6"
+    }]
+  })
+}
 
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "${var.project_name}-ec2-profile"

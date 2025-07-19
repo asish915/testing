@@ -24,12 +24,18 @@ resource "aws_s3_bucket_public_access_block" "artifact_bucket_block" {
   restrict_public_buckets = true
 }
 
+resource "aws_kms_key" "s3_cmk" {
+  description         = "CMK for S3 encryption"
+  enable_key_rotation = true
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "artifact_bucket_encryption" {
   bucket = aws_s3_bucket.artifact_bucket.id
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"  # Use S3-managed encryption
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.s3_cmk.arn
     }
   }
 }
@@ -57,7 +63,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "artifact_logs_enc
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.s3_cmk.arn
     }
   }
 }
