@@ -13,6 +13,17 @@ resource "aws_instance" "vite_ec2" {
   tags = {
     Name = var.instance_name_tag
   }
+
+  root_block_device {
+    encrypted = true
+    volume_size = 8
+    volume_type = "gp3"
+  }
+
+   metadata_options {
+    http_tokens = "required"
+    http_endpoint = "enabled"
+  }
 }
 
 
