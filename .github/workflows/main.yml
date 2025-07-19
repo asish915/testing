@@ -1,11 +1,51 @@
-name: Deploy Vite App to EC2
+name: Automation of Terraform and deployment on EC2
 
 on:
   push:
     branches:
       - main
 
+variables:
+   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+   AWS_REGION: ${{ secrets.AWS_REGION }}
+
+before_script:
+  - echo "Setting up Terraform environment"
+  - terraform --version
+  - echo "Initializing Terraform"
+  - terraform init
+
+stages:
+  - validate
+  - plan
+  - apply
+  - deploy
+
 jobs:
+  validate:
+    stage: validate
+    script: 
+        - terraform validate
+
+  plan:
+    stage: plan
+    dependencies:
+        - validate
+    script: 
+        - terraform plan -out="planfile"
+    artifacts:
+        paths:
+          - planfile
+
+  apply:
+    stage: apply
+    dependencies:
+        - plan
+    script: 
+        - terraform apply -auto-approve "planfile"
+
+
   deploy:
     runs-on: ubuntu-latest
 
