@@ -83,6 +83,12 @@ resource "aws_s3_bucket_logging" "artifact_bucket_logging" {
   target_prefix = "log/"
 }
 
+resource "aws_s3_bucket_logging" "artifact_logs_bucket_logging" {
+  bucket        = aws_s3_bucket.artifact_bucket_logs.id
+  target_bucket = aws_s3_bucket.artifact_bucket_logs.id
+  target_prefix = "access-logs/"
+}
+
 
 
 
