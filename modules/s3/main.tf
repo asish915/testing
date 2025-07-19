@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "artifact_bucket" {
-  bucket = var.bucket_name
-  force_destroy = true    # Automatically Empty the bucket and destroy it
+  bucket         = var.bucket_name
+  force_destroy  = true                   # Automatically empty the bucket
 
   tags = {
     Name        = "${var.project_name}-artifact-bucket"
@@ -14,6 +14,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
   versioning_configuration {
     status = "Enabled"
   }
+}
 
 resource "aws_s3_bucket_public_access_block" "artifact_bucket_block" {
   bucket                  = aws_s3_bucket.artifact_bucket.id
@@ -21,7 +22,7 @@ resource "aws_s3_bucket_public_access_block" "artifact_bucket_block" {
   ignore_public_acls      = true
   block_public_policy     = true
   restrict_public_buckets = true
-  }
+}
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "artifact_bucket_encryption" {
   bucket = aws_s3_bucket.artifact_bucket.id
@@ -33,6 +34,4 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "artifact_bucket_e
   }
 }
 
-
-}
 
