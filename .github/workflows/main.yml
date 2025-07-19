@@ -5,45 +5,37 @@ on:
     branches:
       - main
 
-variables:
-   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-   AWS_REGION: ${{ secrets.AWS_REGION }}
-
-before_script:
-  - echo "Setting up Terraform environment"
-  - terraform --version
-  - echo "Initializing Terraform"
-  - terraform init
-
-stages:
-  - validate
-  - plan
-  - apply
-  - deploy
-
 jobs:
-  validate:
-    stage: validate
-    script: 
-        - terraform validate
+  terraform:
+    name: Terraform Init & Apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-  plan:
-    stage: plan
-    dependencies:
-        - validate
-    script: 
-        - terraform plan -out="planfile"
-    artifacts:
-        paths:
-          - planfile
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
 
-  apply:
-    stage: apply
-    dependencies:
-        - plan
-    script: 
-        - terraform apply -auto-approve "planfile"
+      - name: Init
+        run: terraform -chdir=terraform init
+
+      - name: Format
+        run: terraform -chdir=terraform fmt -check
+
+      - name: Validate
+        run: terraform -chdir=terraform validate
+        
+        name: Plan
+        dependencies: 
+           - Validate
+        run: terraform -chdir=terraform plan
+
+      - name: Terraform Apply
+        dependencies: 
+           - Plan
+        run: terraform -chdir=terraform apply -auto-approve
 
 
   deploy:
