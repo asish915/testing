@@ -7,7 +7,7 @@ on:
 
 jobs:
   terraform:
-    name: Terraform Init & Apply
+    name: Terraform Automation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -18,23 +18,19 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Init
+      - name: Terraform Init
         run: terraform -chdir=terraform init
 
-      - name: Format
+      - name: Terraform Format
         run: terraform -chdir=terraform fmt -check
 
-      - name: Validate
+      - name: Terraform Validate
         run: terraform -chdir=terraform validate
         
-        name: Plan
-        dependencies: 
-           - Validate
+        name: Terraform  Plan
         run: terraform -chdir=terraform plan
 
       - name: Terraform Apply
-        dependencies: 
-           - Plan
         run: terraform -chdir=terraform apply -auto-approve
 
 
