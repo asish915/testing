@@ -61,9 +61,10 @@ jobs:
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
-
+         
+      # Building the Docker image in the provided path
       - name: Build Docker image
-        run: docker build -t vite-app:latest .
+        run: docker build -t vite-app:latest -f vite-app/Dockerfile vite-app
 
       - name: Scan Docker image with Trivy
         uses: aquasecurity/trivy-action@master
