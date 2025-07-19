@@ -125,4 +125,4 @@ jobs:
             sudo rm -rf /usr/share/nginx/html/*
             sudo cp -r /home/${{ secrets.EC2_USER }}/vite-app/* /usr/share/nginx/html/
             sudo systemctl restart nginx
-          EOF
+          EOF 
